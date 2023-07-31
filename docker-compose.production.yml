@@ -1,0 +1,34 @@
+version: '3'
+
+volumes:
+  pd_data_production:
+  static_volume:
+
+
+services:
+  db:
+    image: postgres:13.10
+    env_file: .env
+    volumes:
+      - pd_data_production:/var/lib/postgresql/data
+  backend:
+    image: temposky/taski_backend
+    env_file: .env
+    volumes:
+      - static_volume:/backend_static
+    depends_on:
+      - db
+  frontend:
+    image: temposky/taski_frontend:latest
+    env_file: .env
+    volumes:
+      - static_volume:/frontend_static/
+    command: cp -r /app/build/. /frontend_static/
+  gateway:
+    image: temposky/taski_gateway
+    volumes:
+      - static_volume:/staticfiles/
+    ports:
+      - "8000:80"
+    depends_on:
+      - backend
