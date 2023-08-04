@@ -4,7 +4,6 @@ volumes:
   pd_data_production:
   static_volume:
 
-
 services:
   db:
     image: postgres:13.10
